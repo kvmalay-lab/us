@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Merry Christmas Pranavi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #f5f0e8;
+      --envelope-bg: #f9f6f0;
+      --paper-bg: #fdfbf7;
+      --text-main: #8b3a3a;
+      --text-body: #2a2a2a;
+      --tape-color: rgba(240, 198, 116, 0.7);
+    }
+
+    body {
+      background-color: var(--bg-color);
+      font-family: 'Playfair Display', serif;
+      margin: 0;
+      padding: 0;
+      overflow: hidden; /* Prevent scrolling during transition */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      color: var(--text-main);
+    }
+
+    /* --- Envelope State --- */
+    .envelope-wrapper {
+      position: absolute;
+      width: 90%;
+      max-width: 400px;
+      aspect-ratio: 3/4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: all 1s ease-in-out;
+      z-index: 10;
+    }
+
+    .envelope {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: var(--envelope-bg);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+      border-radius: 4px; /* Slight rounding */
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transform-origin: center;
+    }
+
+    /* Envelope Lines SVG */
+    .envelope-lines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+      padding: 40px 30px;
+      text-align: center;
+    }
+
+    .main-text {
+      font-size: 2rem;
+      line-height: 1.3;
+      font-weight: 700;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .main-text span {
+        font-style: italic;
+        margin: 0 5px;
+    }
+
+    .bottom-text {
+      font-size: 0.85rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-top: auto;
+      padding-top: 20px;
+    }
+
+    /* Wax Seal / Heart */
+    .seal-container {
+      position: absolute;
+      top: 55%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 5;
+      cursor: pointer;
+    }
+
+    .heart {
+      width: 90px;
+      height: 90px;
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+      animation: pulse 2.5s infinite ease-in-out;
+      transition: transform 0.3s ease;
+    }
+
+    .heart:hover {
+        animation: none;
+        transform: scale(1.1);
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+
+    /* --- Letter State --- */
+    .letter-wrapper {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 1s ease-in-out;
+      z-index: 5;
+    }
+
+    .bg-img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: blur(5px) brightness(0.9);
+      transform: scale(1.1);
+      z-index: 0;
+    }
+
+    .paper-container {
+      position: relative;
+      width: 90%;
+      max-width: 500px;
+      background: var(--paper-bg);
+      padding: 40px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      transform: translateY(50px) rotate(-1deg);
+      transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+      z-index: 2;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+
+    /* Scrollbar styling for paper */
+    .paper-container::-webkit-scrollbar {
+        width: 6px;
+    }
+    .paper-container::-webkit-scrollbar-thumb {
+        background-color: #d1cbbd;
+        border-radius: 3px;
+    }
+
+    /* Tape */
+    .tape {
+      position: absolute;
+      top: -15px;
+      left: 50%;
+      transform: translateX(-50%) rotate(1deg);
+      width: 120px;
+      height: 35px;
+      background-color: var(--tape-color);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      opacity: 0.9;
+      /* Rough edges effect via mask could be complex, simple transparency works well for tape look */
+      mask-image: linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%),
+                  linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+      -webkit-mask-image: linear-gradient(135deg, transparent 2px, black 2px), linear-gradient(225deg, transparent 2px, black 2px); /* Not real torn edge but simple */
+      border-left: 2px solid rgba(255,255,255,0.3);
+      border-right: 2px solid rgba(255,255,255,0.3);
+    }
+
+    .text-content {
+      font-family: 'Lato', sans-serif; /* Body font */
+      color: var(--text-body);
+      line-height: 1.7;
+    }
+
+    .text-content h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      color: #8b1e1e;
+      text-align: center;
+      margin-top: 10px;
+      margin-bottom: 5px;
+    }
+
+    .text-content .recipient {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      text-align: center;
+      font-size: 1.2rem;
+      color: #593d3b;
+      margin-bottom: 25px;
+    }
+
+    .text-content p.body-text {
+      text-align: justify;
+      margin-bottom: 25px;
+      font-size: 1rem;
+    }
+
+    .text-content .signature {
+      text-align: right;
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      letter-spacing: 0.1em;
+      color: #8b3a3a;
+      margin-top: 30px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+      .paper-container {
+        padding: 30px 20px;
+        width: 85%;
+      }
+      .main-text {
+        font-size: 1.5rem;
+      }
+      .heart {
+        width: 70px;
+        height: 70px;
+      }
+      .text-content h2 {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Envelope State -->
+  <div id="envelope-wrapper" class="envelope-wrapper">
+    <div class="envelope">
+      <!-- Decorative Lines -->
+      <svg class="envelope-lines" viewBox="0 0 400 500" preserveAspectRatio="none">
+         <!-- Back Flap lines hint -->
+        <path d="M0 500 L200 280 L400 500" fill="none" stroke="#8b7355" stroke-width="1" opacity="0.3" />
+        <path d="M0 0 L200 220 L400 0" fill="none" stroke="#8b7355" stroke-width="1" opacity="0.3" />
+      </svg>
+
+      <div class="content">
+        <div class="main-text">
+            <div>My world <br><span>only</span> makes<br>sense,<br>when it's<br>just us.</div>
+        </div>
+        <div class="bottom-text">
+          LOTS OF<br>LOVE<br>YASH
+        </div>
+      </div>
+    </div>
+
+    <!-- Heart Seal (Outside Content to sit on top) -->
+    <div class="seal-container" onclick="openLetter()">
+      <div class="heart">
+        <svg viewBox="0 0 100 100">
+          <path d="M50 90 C25 75 10 60 10 45 C10 30 22 20 35 20 C42 20 48 25 50 32 C52 25 58 20 65 20 C78 20 90 30 90 45 C90 60 75 75 50 90 Z" fill="#a83232" />
+          <path d="M50 85 C28 72 15 60 15 45 C15 33 24 25 35 25 C41 25 46 29 50 35 C54 29 59 25 65 25 C76 25 85 33 85 45 C85 60 72 72 50 85 Z" fill="#c74545" />
+          <!-- Shine/Reflection -->
+          <ellipse cx="35" cy="35" rx="8" ry="12" fill="#e85555" opacity="0.4" transform="rotate(-20 35 35)" />
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Letter State -->
+  <div id="letter-wrapper" class="letter-wrapper">
+    <!-- Background Image -->
+    <img src="us1.jpg" alt="Us" class="bg-img" id="bg-image">
+
+    <div class="paper-container">
+      <div class="tape"></div>
+      <div class="text-content">
+        <h2>MERRY CHRISTMAS</h2>
+        <div class="recipient">to Pranavi</div>
+
+        <p class="body-text">
+          Mostly everyone is out celebrating and the vibes are supposed to be happy but honestly? it feels empty without you i look around at the lights and empty without you i just realize how much i miss your presence how much i miss the way you take up space in my life i know i can’t hand you a physical box right now i can’t give you the world like i want to so this is it this message is the only present i can give you as of now just me, my words, and my heart waiting for you it’s cold out here and it just reminds me that my hands feel wrong without yours i miss your noise i miss your chaos i miss the way you just exist next to me you’re the only gift i actually want so please come back and make my holiday real again i love you Pranavi.
+        </p>
+
+        <div class="signature">
+          FOREVER YOURS,
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function openLetter() {
+      const envelopeWrapper = document.getElementById('envelope-wrapper');
+      const letterWrapper = document.getElementById('letter-wrapper');
+      const paperContainer = document.querySelector('.paper-container');
+
+      // 1. Animate Envelope away
+      envelopeWrapper.style.transform = 'scale(1.5)';
+      envelopeWrapper.style.opacity = '0';
+
+      // 2. Reveal Letter
+      // Wait a slight moment for the envelope animation to start
+      setTimeout(() => {
+        envelopeWrapper.style.display = 'none'; // Remove from flow
+
+        letterWrapper.style.opacity = '1';
+        letterWrapper.style.pointerEvents = 'auto'; // Enable interaction
+
+        // Slide up the paper
+        setTimeout(() => {
+            paperContainer.style.transform = 'translateY(0) rotate(-1deg)';
+        }, 100);
+
+      }, 800); // Matches transition time mostly
+    }
+  </script>
+</body>
+</html>
